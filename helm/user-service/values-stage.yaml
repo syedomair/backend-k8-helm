@@ -1,8 +1,9 @@
 replicaCount: 1
 
 image:
+  registry: ""
   repository: user-service
-  tag: latest
+  tag: ""
   pullPolicy: IfNotPresent
 
 service:
