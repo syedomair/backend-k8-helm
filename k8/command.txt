@@ -1,0 +1,30 @@
+
+kubectl create configmap zap-logger-config --from-file=../src/config/zap-logger-config.json
+kubectl create configmap gorm-logger-config --from-file=../src/config/gorm-logger-config.json
+
+kubectl apply -f all-configmap.yaml
+kubectl create secret generic all-service-secret --from-env-file=.env_local
+kubectl apply -f postgres-pvc.yaml
+kubectl apply -f postgres-secret.yaml
+kubectl apply -f postgres-configmap.yaml
+kubectl apply -f postgres-deployment.yaml
+kubectl apply -f postgres-service.yaml
+
+
+kubectl apply -f point-deployment.yaml
+kubectl apply -f point-service.yaml
+
+kubectl apply -f department-deployment.yaml
+kubectl apply -f department-service.yaml
+
+kubectl apply -f user-deployment.yaml
+kubectl apply -f user-service.yaml
+
+minikube addons enable ingress
+kubectl get pods -n ingress-nginx
+kubectl apply -f nginx-ingress.yaml
+
+khalid@khalid-Latitude-7400:~/p2/k8$ kubectl get ingress
+NAME            CLASS   HOSTS         ADDRESS        PORTS   AGE
+nginx-ingress   nginx   nginx.local   192.168.49.2   80      81s
+

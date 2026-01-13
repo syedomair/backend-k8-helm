@@ -1,0 +1,8 @@
+ingress:
+  enabled: true
+  className: nginx
+  host: nginx.local
+  department:
+    servicePort: 5002
+  user:
+    servicePort: 5001

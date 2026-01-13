@@ -1,0 +1,6 @@
+postgres:
+  image: postgres:latest
+  storage: 1Gi
+  user: myuser
+  password: mypassword
+  db: mydb

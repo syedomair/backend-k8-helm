@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "point-service.name" . }}
+spec:
+  type: {{ .Values.service.type }}
+  selector:
+    app: {{ include "point-service.name" . }}
+  ports:
+    - name: grpc          
+      port: {{ .Values.service.port }}
+      targetPort: {{ .Values.service.targetPort }}
+      protocol: TCP

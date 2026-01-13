@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "user-service.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "user-service.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "user-service.name" . }}
+    spec:
+      containers:
+        - name: user-service
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+          envFrom:
+            - configMapRef:
+                name: user-service-config
+            - secretRef:
+                name: user-service-secret
+          volumeMounts:
+            - name: user-service-config
+              mountPath: /config/zap-logger-config.json
+              subPath: zap-logger-config.json
+            - name: user-service-config
+              mountPath: /config/gorm-logger-config.json
+              subPath: gorm-logger-config.json
+      volumes:
+        - name: user-service-config
+          configMap:
+            name: user-service-config
+            items:
+              - key: zap-logger-config.json
+                path: zap-logger-config.json
+              - key: gorm-logger-config.json
+                path: gorm-logger-config.json

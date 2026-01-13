@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "department-service.name" . }}
+spec:
+  replicas: {{ .Values.replicaCount }}
+  selector:
+    matchLabels:
+      app: {{ include "department-service.name" . }}
+  template:
+    metadata:
+      labels:
+        app: {{ include "department-service.name" . }}
+    spec:
+      containers:
+        - name: department-service
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - containerPort: {{ .Values.service.targetPort }}
+          envFrom:
+            - configMapRef:
+                name: department-service-config
+            - secretRef:
+                name: department-service-secret
+          volumeMounts:
+            - name: department-service-config
+              mountPath: /config/zap-logger-config.json
+              subPath: zap-logger-config.json
+            - name: department-service-config
+              mountPath: /config/gorm-logger-config.json
+              subPath: gorm-logger-config.json
+      volumes:
+        - name: department-service-config
+          configMap:
+            name: department-service-config
+            items:
+              - key: zap-logger-config.json
+                path: zap-logger-config.json
+              - key: gorm-logger-config.json
+                path: gorm-logger-config.json
