@@ -84,7 +84,7 @@ build_prod_point:
 	docker tag prod/point-service:latest $(ECR_URL)/prod/point-service:latest
 	docker push $(ECR_URL)/prod/point-service:latest
 
-minikube-all: minikube-delete minikube-start build
+minikube-build: minikube-delete minikube-start build
 
 minikube-delete:
 	minikube delete

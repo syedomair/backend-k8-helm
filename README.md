@@ -8,12 +8,28 @@ The primary goal of this project is to **deeply understand the mechanics of Kube
 
 ### Demo
 **Run Locally:**
+Run the following command
 ```bash
-make minikube-all
-make build
+kubectl get node -o wide
+```
+Note the INTERNAL-IP value and add the following line in /etc/hosts file
+INTERNAL-IP    nginx.local
+For example: 
+```bash
+192.168.49.2    nginx.local
+```
+Then run the following commands
+
+```bash
+make minikube-build
 make deploy
 ```
 Prerequisites: Docker and minikube must be installed on your machine.
+Then run these command, it should return data from API. 
+```bash
+curl nginx.local/v1/departments
+curl nginx.local/v1/users
+```
 
 
 ### 🎯 Scope & Purpose
@@ -80,3 +96,9 @@ A single ***Makefile*** acts as a lightweight orchestration layer that:
     * prod (EKS)
 
 This mirrors how CI/CD pipelines behave, making the transition to tools like GitHub Actions or Argo CD straightforward.
+
+### 🧠 Who This Repo Is For
+* Developers learning real-world Kubernetes & Helm
+* Engineers transitioning from Docker Compose to Kubernetes
+* Anyone wanting a clear, non-magical EKS deployment flow
+* Interview preparation for DevOps / Platform / Backend roles
