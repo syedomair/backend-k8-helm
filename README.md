@@ -13,7 +13,9 @@ Run the following command
 kubectl get node -o wide
 ```
 Note the INTERNAL-IP value and add the following line in /etc/hosts file
+```bash
 INTERNAL-IP    nginx.local
+```
 For example: 
 ```bash
 192.168.49.2    nginx.local
@@ -25,7 +27,9 @@ make minikube-build
 make deploy
 ```
 Prerequisites: Docker and minikube must be installed on your machine.
-Then run these command, it should return data from API. 
+<br/>
+Then run the following commands
+
 ```bash
 curl nginx.local/v1/departments
 curl nginx.local/v1/users
