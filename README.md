@@ -49,7 +49,7 @@ The emphasis is on:
 * AWS-native Kubernetes deployment workflows
 
 🔗 Note:
-The Go microservices code itself lives in a separate repository, where the same APIs can be run locally using Docker Compose.
+The Go microservices code itself lives in a separate repository, [backend-microservices](https://github.com/syedomair/backend-microservices) where the same APIs can be run locally using Docker Compose.
 This repository picks up after that and shows how the same services are deployed to Kubernetes in a production-style setup.
 
 ### 🧱 Architecture Overview
