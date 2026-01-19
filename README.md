@@ -35,6 +35,29 @@ curl nginx.local/v1/departments
 curl nginx.local/v1/users
 ```
 
+## 📚 Repository Series Context
+
+This repository is part of a three-repository learning and production series:
+
+1. **[backend-microservices](https://github.com/syedomair/backend-microservices)**
+   - Go application code
+   - REST & gRPC services
+   - Dockerfiles and Docker Compose
+   - Business logic and testing
+
+2. **backend-k8-helm** (this repository)
+   - Kubernetes fundamentals
+   - Helm chart design
+   - Environment-aware deployments
+   - EKS-ready infrastructure
+
+3. **[backend-k8-helm-cicd](https://github.com/syedomair/backend-k8-helm-cicd)**
+   - GitHub Actions workflows
+   - Secure CI/CD pipelines
+   - Automated build, push, and deploy
+   - Production-grade GitOps-style flow
+
+This repository intentionally sits *between* application development and full CI/CD automation.
 
 ### 🎯 Scope & Purpose
 This repository is intentionally infrastructure-focused.
@@ -51,6 +74,17 @@ The emphasis is on:
 🔗 Note:
 The Go microservices code itself lives in a separate repository, [backend-microservices](https://github.com/syedomair/backend-microservices) where the same APIs can be run locally using Docker Compose.
 This repository picks up after that and shows how the same services are deployed to Kubernetes in a production-style setup.
+
+## 🚫 Non-Goals
+
+This repository does NOT cover:
+- Go application logic
+- REST or gRPC handler implementations
+- Business-domain concerns
+- CI/CD automation (covered in [backend-k8-helm-cicd](https://github.com/syedomair/backend-k8-helm-cicd))
+
+The focus here is strictly on Kubernetes and Helm mechanics.
+
 
 ### 🧱 Architecture Overview
 The system consists of independently deployable Helm charts, one per component:
@@ -70,12 +104,42 @@ Container images are:
 * Pushed to Amazon ECR
 * Pulled by EKS using Helm-provided image configuration
 
+```mermaid
+graph TB
+    subgraph Kubernetes 
+        A[Client] --> B[Ingress]
+        B --> C[User Service]
+        C --> E[(Postgres DB)]
+        C -- gRPC --> G[Point Service]
+        G --> H[(Postgres DB)]
+        B --> D[Department Service]
+        D --> F[(Postgres DB)]
+    end
+``` 
+
+
+
 ### 🔧 Configuration Strategy
 * ***Environment variables*** are loaded from .env.<env> files (.env.dev, .env.stage, .env.prod)
 * Sensitive values (e.g., DATABASE_URL) are injected at deploy time via Helm --set
 * Image registry and tags are parameterized, allowing:
     * The same Helm chart to be reused across environments
-    * No hardcoded AWS account or registry URLs inside Helm values files
+    - Docker images are environment-agnostic
+    - The same image is reused across dev, stage, and prod
+    - Environment-specific behavior is controlled via:
+    - Helm values files
+    - Runtime-injected secrets
+    - Image registry and tag overrides
+
+This prevents configuration drift and supports safe promotions across environments.
+
+### 🔄 Environment Promotion Model
+
+- `dev` runs locally on Minikube
+- `stage` mirrors production infrastructure on EKS
+- `prod` uses the same Helm charts with stricter values
+
+Only configuration changes between environments — not application code.
 
 Example deployment command (via Makefile):
 
