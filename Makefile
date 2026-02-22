@@ -11,7 +11,6 @@ endif
 
 deploy:
 	@echo "Deploying to $(ENV) using $(ENV_FILE)..."
-	set-eks-context
 	helm upgrade --install $(ENV)-point-service helm/point-service -f helm/point-service/values-$(ENV).yaml --set secret.DATABASE_URL=$(DATABASE_URL) --set image.registry=$(ECR_URL) --set image.tag=$(TAG)
 	helm upgrade --install $(ENV)-user-service helm/user-service -f helm/user-service/values-$(ENV).yaml --set secret.DATABASE_URL=$(DATABASE_URL)  --set image.registry=$(ECR_URL) --set image.tag=$(TAG)
 	helm upgrade --install $(ENV)-department-service helm/department-service -f helm/department-service/values-$(ENV).yaml --set secret.DATABASE_URL=$(DATABASE_URL)  --set image.registry=$(ECR_URL) --set image.tag=$(TAG)
@@ -95,5 +94,5 @@ minikube-start:
 	minikube addons enable ingress
 
 set-eks-context:
-    aws eks --region $(AWS_REGION) --profile $(AWS_PROFILE) update-kubeconfig --name $(EKS_CLUSTER_NAME)
+	aws eks --region $(AWS_REGION) --profile $(AWS_PROFILE) update-kubeconfig --name $(EKS_CLUSTER_NAME)
 
